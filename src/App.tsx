@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment'
+import formatNumber from './utils/FormatNumber';
 
 function App() {
 
@@ -13,6 +14,8 @@ function App() {
   type UserType = {
     avatarUrl: string
     bio: string
+    followers: { totalCount: number }
+    following: { totalCount: number }
     id: string
     location: string
     login: string
@@ -55,6 +58,8 @@ function App() {
             ... on User {
               avatarUrl
               bio
+              followers {totalCount}
+              following {totalCount}
               id
               location
               login
@@ -120,24 +125,26 @@ function App() {
 
   return (
     <div>
-      <header className='bg-[#f6f8fa] h-16'>
-        <div className='flex justify-center items-center h-16'>
-          {/* <i className="fa-solid fa-magnifying-glass text-red-300"></i> */}
-          <input
-            type='text'
-            value={userNameInputValue}
-            onChange={(e) => {
-              setUsernameInputValue(e.target.value)
-              getUsers()
-            }}
-            className='border-[1px] border-[#d0d7de] rounded-md bg-[#f6f8fa] text-sm py-1.5 pl-2 w-8/12'
-            placeholder='Find by username'
-          />
-          {userNameInputValue.length >= 1 && <i className='fa-solid fa-circle-xmark text-[#656d76] relative right-6 cursor-pointer' onClick={() => setUsernameInputValue('')} />}
+      <header className='bg-[#f6f8fa] h-20 flex flex-col items-center'>
+        {/* ===input to search user=== */}
+        <div className='flex justify-center items-center h-20 w-7/12 lg:w-5/12'>
+            <i className='fa-solid fa-magnifying-glass text-[#6e7781] relative left-4 w-0'></i>
+            <input
+              type='text'
+              value={userNameInputValue}
+              onChange={(e) => {
+                setUsernameInputValue(e.target.value)
+                getUsers()
+              }}
+              className='border-[1px] border-[#d0d7de] rounded-md bg-[#f6f8fa] text-sm py-1.5 px-10 w-full'
+              placeholder='Find by username'
+            />
+            {userNameInputValue.length >= 1 ? <i className='fa-solid fa-circle-xmark text-[#656d76] cursor-pointer relative right-7 w-0' onClick={() => setUsernameInputValue('')} /> : <span className='w-4'></span>}
         </div>
 
-        {usersData &&
-          <section className='bg-white border-[1px] border-[#f6f8fa] rounded-md w-8/12 mx-auto'>
+        {/* ===search result of list of users=== */}
+        {usersData && userNameInputValue.length !== 0 &&
+          <section className='bg-white border-[1px] border-[#d0d7de] rounded-md w-7/12 lg:w-5/12 mt-1 z-10 absolute top-16'>
             {usersData.search.nodes.map((node: UserType) => {
               return (
                 <div
@@ -164,26 +171,36 @@ function App() {
 
       {userDataLoading && 'loading...'}
       {userData &&
-        <main className='mx-4 my-2'>
+        <main className='my-2 px-4 max-w-7xl mx-auto md:flex md:gap-4 md:px-6 lg:px-8 lg:gap-6'>
 
-          <section className='w-full border-b-[1px] border-[#d0d7de] py-8'>
-            <div className='flex items-center mb-4'>
-              <img src={userData.search.nodes[0].avatarUrl} alt={`${userData.search.nodes[0].name}'s avatar`} className='w-24 rounded-full mr-4' />
+          {/* ===profile section=== */}
+          <section className='w-full border-b-[1px] border-[#d0d7de] py-8 md:max-w-[256px] lg:max-w-[296px] md:border-b-0'>
+            <div className='flex items-center mb-4 md:flex-col md:items-start md:mb-0'>
+              <img src={userData.search.nodes[0].avatarUrl} alt={`${userData.search.nodes[0].name}'s avatar`} className='w-1/6 border-2 border-[#D0D7DE]  rounded-full mr-4 md:w-full ' />
               <div className='py-4'>
                 <h1 className='text-2xl text-[#1f2328] font-bold'>{userData.search.nodes[0].name}</h1>
-                <h2 className='text-xl text-[#656d76]'>{userData.search.nodes[0].login}</h2>
+                <h2 className='text-xl text-[#656d76] font-light'>{userData.search.nodes[0].login}</h2>
               </div>
             </div>
+            <button className='w-full bg-[#f6f8fa] text-[#24282f] font-medium px-4 py-[5px] rounded-md text-sm border-[1px] border-[#d0d7de] shadow mb-4 hidden md:block'>Follow</button>
             <p className='text-[#1f2328] mb-4'>{userData.search.nodes[0].bio}</p>
-            <button className='w-full bg-[#f6f8fa] text-[#24282f] px-4 py-1.5 rounded-md text-sm border-[1px] border-[#d0d7de] shadow'>Follow</button>
+            <div className='text-sm mb-4'>
+              <i className='fa-solid fa-users text-[#656d76] mr-2' />
+              <span className='text-[1f2328] font-semibold'>{formatNumber(userData.search.nodes[0].followers.totalCount)}</span>
+              <span className='text-[#656d76]'> followers</span> ·
+              <span className='text-[1f2328] font-semibold'> {formatNumber(userData.search.nodes[0].following.totalCount)}</span>
+              <span className='text-[#656d76]'> following</span>
+            </div>
+            <button className='w-full bg-[#f6f8fa] text-[#24282f] font-medium px-4 py-[5px] rounded-md text-sm border-[1px] border-[#d0d7de] shadow md:hidden'>Follow</button>
           </section>
 
+          {/* ===repositories section=== */}
           <section className='py-8'>
-            <div className='flex flex-col gap-2 border-b-[1px] border-[#d0d7de] pb-8'>
+            <div className='flex flex-col gap-2 border-b-[1px] border-[#d0d7de] pb-8 lg:flex-row'>
               <input
                 type='text'
                 placeholder='Find a repository...'
-                className='border-[1px] border-[#d0d7de] rounded-md text-sm py-1.5 pl-3 w-full'
+                className='border-[1px] border-[#d0d7de] rounded-md text-sm py-[5px] pl-3 w-full'
                 value={repositoryInputValue}
                 onChange={(e) => {
                   setRepositoryInputValue(e.target.value)
@@ -196,7 +213,7 @@ function App() {
                   setSelectedLanguage(e.target.value)
                   getRepositories()
                 }}
-                className='w-fit bg-[#f6f8fa] text-[#24282f] px-4 py-1.5 rounded-md text-sm border-[1px] border-[#d0d7de] shadow'
+                className='w-fit bg-[#f6f8fa] text-[#24282f] font-medium px-4 py-[5px] rounded-md text-sm border-[1px] border-[#d0d7de] shadow'
               >
                 <option value={''}>All languages</option>
                 {languagesForFiltering.map((language: any) => {

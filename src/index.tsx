@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, HttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
 
 

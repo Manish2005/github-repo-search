@@ -27,16 +27,15 @@ export default function Repositories({ selectedUser }: { selectedUser: string | 
       searchQuery: `user:${selectedUser} fork:true`
     }
   })
-  const makeListOfLanguages =()=> {
-    let list:string[] = []
+  const makeListOfLanguages = () => {
+    let list: string[] = []
     allRepositoriesData?.search.nodes.filter((node: RepositoryType) => {
-      if(list.indexOf(node.primaryLanguage?.name) === -1 && node.primaryLanguage?.name !== undefined) {
+      if (list.indexOf(node.primaryLanguage?.name) === -1 && node.primaryLanguage?.name !== undefined) {
         list.push(node.primaryLanguage?.name)
       }
     })
     return list
   }
-
 
 
   return (
@@ -61,7 +60,7 @@ export default function Repositories({ selectedUser }: { selectedUser: string | 
           className='w-fit bg-[#f6f8fa] text-[#24282f] font-medium px-4 py-[5px] rounded-md text-sm border-[1px] border-[#d0d7de] shadow'
         >
           <option value={''}>All languages</option>
-            {makeListOfLanguages().map((language: string) => {
+          {makeListOfLanguages().map((language: string) => {
             return <option key={language} value={language}>{language}</option>
           })}
         </select>
@@ -76,6 +75,7 @@ export default function Repositories({ selectedUser }: { selectedUser: string | 
         </div>
       }
       {repositoriesDataLoading && <p className='text-sm text-[#656D76] my-4'>loading...</p>}
+      {repositoriesData?.search.repositoryCount === 0 && <p className='text-sm text-[#656D76] my-4'>There are no public repositories yet</p>}
       {repositoriesData?.search.nodes.map((node: RepositoryType) => {
         return (
           <div key={node.id} className='border-b-[1px] border-[#d0d7de] py-6 flex justify-between items-center'>
@@ -86,8 +86,12 @@ export default function Repositories({ selectedUser }: { selectedUser: string | 
               </h3>
               <p className='text-[#656d76] text-sm mb-4 pr-6'>{node.description}</p>
               <span className='text-xs'>
-                <span className='rounded-full mr-1.5' style={{ backgroundColor: node.primaryLanguage?.color }}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span className='text-[#656d76] mr-4'>{node.primaryLanguage?.name}</span>
+                {node.primaryLanguage &&
+                  <>
+                    <span className='rounded-full mr-1.5' style={{ backgroundColor: node.primaryLanguage.color }}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span className='text-[#656d76] mr-4'>{node.primaryLanguage.name}</span>
+                  </>
+                }
                 <span className='text-[#656d76]'>Updated {moment(node.pushedAt).fromNow()}</span>
               </span>
             </div>

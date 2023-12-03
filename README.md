@@ -6,10 +6,10 @@ This is a simplified version of GitHub Repositories, where you can filter by git
 
 ## How to run
 
-create a .env file and paste the [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) that you created.
+create a .env file and paste the [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 ```
-REACT_APP_GITHUB_TOKEN=<YOUR TOKEN>
+REACT_APP_GITHUB_TOKEN=<YOUR PERSONAL ACCESS TOKEN>
 ```
 
 ## How to run test
@@ -27,7 +27,7 @@ Currently, it only retrieves first 100 repositories of a user.
 When the user stops typing, there should be few seconds of delay before the search to start. Currently the query is called everytime the user changes the value of input.
 
 ### add error boundary
-When an error occurred when retrieving data, an error message should be displayed
+When an error occurred when retrieving data, an error message should be displayed.
 
 
 

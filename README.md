@@ -1,7 +1,5 @@
 # GitHub Repositories With Search Functionality
 
-live site [here](https://anne-mfl.github.io/github-repo-search/)
-
 This is a simplified version of GitHub Repositories, where you can filter by github username and display their repositories in a list. It is also possible to filter through the list of repositories by the name of the repository and by the programming language.
 
 ## Getting started

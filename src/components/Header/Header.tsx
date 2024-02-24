@@ -3,7 +3,7 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_USERS } from './queries';
 import { UsersType } from './types';
 
-export default function Header({ setSelectedUser }: { setSelectedUser: React.Dispatch<React.SetStateAction<string | null>> }) {
+export function Header({ setSelectedUser }: { setSelectedUser: React.Dispatch<React.SetStateAction<string | null>> }) {
 
   const [userNameInputValue, setUsernameInputValue] = useState<string>('')
 
